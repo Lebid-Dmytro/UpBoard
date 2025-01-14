@@ -1,3 +1,71 @@
+from django.contrib.auth.models import AbstractUser
 from django.db import models
+from django.core.exceptions import ValidationError
+from django.utils.timezone import now
 
-# Create your models here.
+
+class TypeTask(models.Model):
+    name = models.CharField(max_length=255, unique=True)
+
+    def __str__(self):
+        return self.name
+
+
+class Position(models.Model):
+    name = models.CharField(max_length=255, unique=True)
+
+    def __str__(self):
+        return self.name
+
+
+class Worker(AbstractUser):
+    position = models.ManyToManyField(Position, related_name="workers")
+
+    groups = models.ManyToManyField(
+        "auth.Group",
+        related_name="workers_groups",
+        blank=True,
+        help_text="The groups this user belongs to."
+    )
+
+    user_permissions = models.ManyToManyField(
+        "auth.Permission",
+        related_name="workers_permissions",
+        blank=True,
+        help_text="Specific permissions for this user."
+    )
+
+    def __str__(self):
+        return f"{self.first_name} {self.last_name} ({self.username})"
+
+
+class Task(models.Model):
+    STATUS_CHOICES = [
+        ("to_do", "To Do"),
+        ("in_progress", "In Progress"),
+        ("done", "Done"),
+    ]
+
+    name = models.CharField(max_length=255)
+    description = models.TextField()
+    deadline = models.DateTimeField()
+    is_completed = models.BooleanField(default=False)
+    task_type = models.ForeignKey(
+        TypeTask, on_delete=models.SET_NULL, null=True, related_name="tasks"
+    )
+    assignees = models.ManyToManyField(Worker, related_name="tasks")
+    status = models.CharField(
+        max_length=50, choices=STATUS_CHOICES, default="to_do"
+    )
+
+    def clean(self):
+
+        if self.deadline < now():
+            raise ValidationError("The deadline must be in the future.")
+
+    def save(self, *args, **kwargs):
+        self.clean()
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return self.name
