@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+Task detail
+{% endblock %}
+
+{% block content %}
+<div class="task-detail">
+  <h1>Task Details</h1>
+  <div style="display: flex; justify-content: left; gap: 10px;">
+    <a class="image featured" href="single.html"><img alt="" src="{% static 'images/pic01.jpg' %}"
+                                                      style="width: 200px; height: 150px;"/></a>
+    <a class="image featured" href="single.html"><img alt="" src="{% static 'images/pic01.jpg' %}"
+                                                      style="width: 200px; height: 150px;"/></a>
+  </div>
+  <p><strong>Name:</strong> {{ task.name }}</p>
+  <p><strong>Description:</strong> {{ task.description }}</p>
+  <p><strong>Type:</strong> {{ task.task_type }}</p>
+  <p><strong>Assignees:</strong>
+    {% for assignee in task.assignees.all %}
+    {{ assignee }},
+    {% empty %}
+    No assignees
+    {% endfor %}
+  </p>
+  <p><strong>Status:</strong> {{ task.get_status_display }}</p>
+  <p><strong>Opened at:</strong> {{ task.opened_at }}</p>
+  <p><strong>Closed at:</strong> {{ task.closed_at|default:"Open yet" }}</p>
+</div>
+{% endblock %}
