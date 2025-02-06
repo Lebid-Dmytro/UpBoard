@@ -24,4 +24,10 @@ class WorkerAdmin(admin.ModelAdmin):
 admin.site.register(Worker, WorkerAdmin)
 admin.site.register(TypeTask)
 admin.site.register(Position)
-admin.site.register(Task)
+
+
+@admin.register(Task)
+class TaskAdmin(admin.ModelAdmin):
+    list_display = ("name", "status", "opened_at", "closed_at")
+    list_filter = ("status", "opened_at", "closed_at")
+    search_fields = ("name", "description")

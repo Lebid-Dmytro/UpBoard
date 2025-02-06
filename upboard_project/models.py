@@ -48,23 +48,24 @@ class Task(models.Model):
 
     name = models.CharField(max_length=255)
     description = models.TextField()
-    deadline = models.DateTimeField()
-    is_completed = models.BooleanField(default=False)
     task_type = models.ForeignKey(
-        TypeTask, on_delete=models.SET_NULL, null=True, related_name="tasks"
+        "TypeTask", on_delete=models.SET_NULL, null=True, related_name="tasks"
     )
-    assignees = models.ManyToManyField(Worker, related_name="tasks")
+    assignees = models.ManyToManyField("Worker", related_name="tasks")
     status = models.CharField(
         max_length=50, choices=STATUS_CHOICES, default="to_do"
     )
-
-    def clean(self):
-
-        if self.deadline < now():
-            raise ValidationError("The deadline must be in the future.")
+    opened_at = models.DateTimeField(auto_now_add=True)
+    closed_at = models.DateTimeField(null=True, blank=True)
 
     def save(self, *args, **kwargs):
         self.clean()
+
+        if self.status == "done" and not self.closed_at:
+            self.closed_at = now()
+        elif self.status != "done" and self.closed_at:
+            self.closed_at = None
+
         super().save(*args, **kwargs)
 
     def __str__(self):
