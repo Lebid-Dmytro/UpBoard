@@ -1,5 +1,5 @@
 from django import forms
-from .models import Task
+from .models import Task, ClientReview
 
 
 class TaskForm(forms.ModelForm):
@@ -19,3 +19,9 @@ class TaskForm(forms.ModelForm):
             "assignees": forms.SelectMultiple(attrs={"class": "form-control"}),
             "status": forms.Select(attrs={"class": "form-control"}),
         }
+
+
+class ClientReviewForm(forms.ModelForm):
+    class Meta:
+        model = ClientReview
+        fields = ["name", "email", "photo", "review"]

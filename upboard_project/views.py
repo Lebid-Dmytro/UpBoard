@@ -1,12 +1,12 @@
 from datetime import timedelta
 
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.utils.timezone import now
 from django.views import generic
 
-from upboard_project.forms import TaskForm
-from upboard_project.models import Task
+from upboard_project.forms import TaskForm, ClientReviewForm
+from upboard_project.models import Task, ClientReview
 
 
 def index(request):
@@ -44,4 +44,11 @@ class TaskCreateView(generic.CreateView):
     model = Task
     form_class = TaskForm
     template_name = "upboard_project/task_form.html"
+    success_url = reverse_lazy("upboard_project:index")
+
+
+class ClientReviewCreateView(generic.CreateView):
+    model = ClientReview
+    form_class = ClientReviewForm
+    template_name = "upboard_project/reviews_form.html"
     success_url = reverse_lazy("upboard_project:index")

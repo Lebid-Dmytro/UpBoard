@@ -70,3 +70,13 @@ class Task(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class ClientReview(models.Model):
+    name = models.CharField(max_length=255, blank=True, null=True)
+    email = models.EmailField(blank=True, null=True)
+    review = models.TextField()
+    photo = models.ImageField(upload_to="review_photos/", blank=True, null=True)
+
+    def __str__(self):
+        return self.review[:50]
