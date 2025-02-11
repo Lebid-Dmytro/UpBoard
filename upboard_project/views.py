@@ -1,12 +1,14 @@
 from datetime import timedelta
 
-from django.shortcuts import render, redirect
-from django.urls import reverse_lazy
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db.models import Count
+from django.shortcuts import render, redirect, get_object_or_404
+from django.urls import reverse_lazy, reverse
 from django.utils.timezone import now
-from django.views import generic
+from django.views import generic, View
 
 from upboard_project.forms import TaskForm, ClientReviewForm
-from upboard_project.models import Task, ClientReview
+from upboard_project.models import Task, ClientReview, Worker, Comment
 
 
 def index(request):
@@ -20,13 +22,16 @@ class TaskListView(generic.ListView):
 
     def get_queryset(self):
         status = self.kwargs.get("status")
+        queryset = Task.objects.all()
+
         if status == "done":
-            return Task.objects.filter(status="done", closed_at__gte=now() - timedelta(days=30))
+            queryset = queryset.filter(status="done", closed_at__gte=now() - timedelta(days=30))
         elif status == "archive_done":
-            return Task.objects.filter(status="done", closed_at__lt=now() - timedelta(days=30))
+            queryset = queryset.filter(status="done", closed_at__lt=now() - timedelta(days=30))
         elif status:
-            return Task.objects.filter(status=status)
-        return Task.objects.all()
+            queryset = queryset.filter(status=status)
+
+        return queryset.annotate(num_comments=Count("comments"))
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -38,6 +43,29 @@ class TaskListView(generic.ListView):
 
 class TaskDetailView(generic.DetailView):
     model = Task
+    template_name = "upboard_project/task_detail.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["comments"] = self.object.comments.select_related("worker").all()
+        return context
+
+
+class AddCommentView(LoginRequiredMixin, View):
+    def post(self, request, pk):
+        task = get_object_or_404(Task, pk=pk)
+        worker = Worker.objects.get(pk=request.user.pk)
+        text = request.POST.get("text")
+        parent_id = request.POST.get("parent_id")
+
+        parent_comment = None
+        if parent_id:
+            parent_comment = get_object_or_404(Comment, pk=parent_id)
+
+        if text:
+            Comment.objects.create(task=task, worker=worker, text=text, parent=parent_comment)
+
+        return redirect(reverse("upboard_project:task-detail", kwargs={"pk": task.pk}))
 
 
 class TaskCreateView(generic.CreateView):

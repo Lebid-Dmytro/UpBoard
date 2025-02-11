@@ -1669,7 +1669,7 @@ input, select, textarea {
 		input[type="reset"]:active,
 		button:active,
 		.button:active {
-			background: #20b0e5;
+			background: #ff73a4;
 		}
 
 		input[type="button"].alt,
@@ -2705,5 +2705,35 @@ input, select, textarea {
   height: 100px;
   border-radius: 10px;
   object-fit: cover;
+}
+
+.comment {
+  margin-bottom: 20px;
+  padding: 10px;
+  border: 1px solid #ddd;
+  background-color: #f9f9f9;
+}
+
+.reply {
+  margin-top: 10px;
+  padding: 10px;
+  border-left: 3px solid #007BFF;
+  background-color: #f1f9ff;
+}
+
+.replies {
+  list-style-type: none;
+  padding-left: 0;
+}
+
+.replies .reply {
+  margin-left: 20px;
+}
+
+form {
+  margin-top: 10px;
+  background-color: #f1f1f1;
+  padding: 10px;
+  border-radius: 5px;
 }
 

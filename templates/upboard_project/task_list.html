@@ -14,18 +14,18 @@ Task list
     <header>
       <div class="title">
         <h2>{{ task.name }}</h2>
-        <time class="published" datetime="2015-11-01">{{ task.opened_at }}
-          {% if task.closed_at %}
-          / {{ task.closed_at }}
+        <time class="published">{{ task.opened_at|date:"Y-m-d H:i" }}
+          {% if task.closed_at|date:"Y-m-d H:i" %}
+          / {{ task.closed_at|date:"Y-m-d H:i" }}
           {% endif %}
         </time>
       </div>
       <div class="meta">
         {% for assignee in task.assignees.all %}
         <div class="profile">
-          <img class="profile-pic"
-               src="{% static 'images/default-avatar.jpg' %}"
-               alt="{{ assignee.first_name }}">
+          <img alt="{{ assignee.first_name }}"
+               class="profile-pic"
+               src="{% static 'images/default-avatar.jpg' %}">
           <span class="profile-name">{{ assignee.first_name }} {{ assignee.last_name }}</span>
         </div>
         {% empty %}
@@ -38,11 +38,11 @@ Task list
     <p>{{ task.description }}</p>
     <footer>
       <ul class="actions">
-        <li><a class="button large" href="{% url 'upboard_project:task-detail' pk=task.id %} ">Details</a></li>
+        <li><a class="button large" href="{% url 'upboard_project:task-detail' pk=task.id %}">Details</a></li>
       </ul>
       <ul class="stats">
-        <li><a href="#">Comments</a></li>
-        <li><a class="icon solid fa-comment" href="#">128</a></li>
+        <li><a href="{% url 'upboard_project:task-detail' pk=task.id %}">Comments</a></li>
+        <li><a class="icon solid fa-comment" href="#">{{ task.num_comments }}</a></li>
       </ul>
     </footer>
   </article>

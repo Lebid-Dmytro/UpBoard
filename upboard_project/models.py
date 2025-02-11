@@ -80,3 +80,15 @@ class ClientReview(models.Model):
 
     def __str__(self):
         return self.review[:50]
+
+
+class Comment(models.Model):
+    worker = models.ForeignKey(Worker, on_delete=models.CASCADE)
+    task = models.ForeignKey(Task, on_delete=models.CASCADE, related_name="comments")
+    text = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    parent = models.ForeignKey("self", null=True, blank=True, on_delete=models.CASCADE, related_name="replies")
+
+    def __str__(self):
+        return f"Comment by {self.worker} on {self.task}"
+

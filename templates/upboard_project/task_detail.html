@@ -28,4 +28,53 @@ Task detail
   <p><strong>Opened at:</strong> {{ task.opened_at }}</p>
   <p><strong>Closed at:</strong> {{ task.closed_at|default:"Open yet" }}</p>
 </div>
+
+<div class="comments-section">
+  <h2>Comments</h2>
+  <ul>
+    {% for comment in comments %}
+      {% if not comment.parent %}
+      <li class="comment">
+        <strong>{{ comment.worker.first_name }} {{ comment.worker.last_name }}</strong>:
+        <p>{{ comment.text }}</p>
+        <small>({{ comment.created_at|date:"Y-m-d H:i" }})</small>
+
+        <!-- Форма відповіді -->
+        {% if user.is_authenticated %}
+        <form action="{% url 'upboard_project:add-comment' task.pk %}" method="post">
+          {% csrf_token %}
+          <input name="parent_id" type="hidden" value="{{ comment.id }}">
+          <textarea name="text" placeholder="Reply..." required rows="2"></textarea>
+          <button type="submit">Reply</button>
+        </form>
+        {% endif %}
+
+        <!-- Відображення відповідей -->
+        <ul class="replies">
+          {% for reply in comment.replies.all %}
+          <li class="reply">
+            <strong>{{ reply.worker.first_name }} {{ reply.worker.last_name }}</strong>:
+            <p>{{ reply.text }}</p>
+            <small>({{ reply.created_at|date:"Y-m-d H:i" }})</small>
+          </li>
+          {% endfor %}
+        </ul>
+      </li>
+      {% endif %}
+    {% empty %}
+    <li>No comments yet.</li>
+    {% endfor %}
+  </ul>
+</div>
+
+{% if user.is_authenticated %}
+<form action="{% url 'upboard_project:add-comment' task.pk %}" method="post">
+  {% csrf_token %}
+  <textarea name="text" placeholder="Add a comment..." required rows="3"></textarea>
+  <button type="submit">Submit</button>
+</form>
+{% else %}
+<p>You must be logged in to add a comment.</p>
+{% endif %}
+
 {% endblock %}
