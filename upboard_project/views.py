@@ -1,6 +1,9 @@
 from datetime import timedelta
 
+from django.contrib.auth import login
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.views import LoginView
+from django.core.checks import messages
 from django.db.models import Count
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy, reverse
@@ -15,14 +18,14 @@ def index(request):
     return render(request, "upboard_project/index.html")
 
 
-class TaskListView(generic.ListView):
+class TaskListView(LoginRequiredMixin, generic.ListView):
     model = Task
     template_name = "task_list.html"
     context_object_name = "tasks"
 
     def get_queryset(self):
         status = self.kwargs.get("status")
-        queryset = Task.objects.all()
+        queryset = Task.objects.filter(company=self.request.user.company)
 
         if status == "done":
             queryset = queryset.filter(status="done", closed_at__gte=now() - timedelta(days=30))
@@ -68,11 +71,18 @@ class AddCommentView(LoginRequiredMixin, View):
         return redirect(reverse("upboard_project:task-detail", kwargs={"pk": task.pk}))
 
 
-class TaskCreateView(generic.CreateView):
+class TaskCreateView(LoginRequiredMixin, generic.CreateView):
     model = Task
     form_class = TaskForm
     template_name = "upboard_project/task_form.html"
     success_url = reverse_lazy("upboard_project:index")
+
+    def form_valid(self, form):
+        task = form.save(commit=False)
+        task.company = self.request.user.company
+        task.save()
+        task.assignees.add(self.request.user)
+        return super().form_valid(form)
 
 
 class ClientReviewCreateView(generic.CreateView):
@@ -80,3 +90,13 @@ class ClientReviewCreateView(generic.CreateView):
     form_class = ClientReviewForm
     template_name = "upboard_project/reviews_form.html"
     success_url = reverse_lazy("upboard_project:index")
+
+
+class CustomLoginView(LoginView):
+    def form_valid(self, form):
+        user = form.get_user()
+        login(self.request, user)
+
+        if user.company:
+            return redirect("task-list")
+        return redirect("no-company")

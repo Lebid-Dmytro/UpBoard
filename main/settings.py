@@ -72,8 +72,7 @@ TEMPLATES = [
 
 CRISPY_TEMPLATE_PACK = "bootstrap4"
 
-WSGI_APPLICATION = "main.wsgi.application"
-
+# WSGI_APPLICATION = "main.wsgi.application"
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
@@ -130,3 +129,9 @@ STATIC_ROOT = BASE_DIR / "staticfiles"
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+AUTH_USER_MODEL = "upboard_project.Worker"
+
+LOGIN_URL = "/login/"
+
+LOGOUT_REDIRECT_URL = "/"

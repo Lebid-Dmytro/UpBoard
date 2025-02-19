@@ -1,3 +1,4 @@
+from django.contrib.auth.views import LoginView
 from django.urls import path
 
 from upboard_project.views import index, TaskListView, TaskCreateView, TaskDetailView, ClientReviewCreateView, \
@@ -5,6 +6,7 @@ from upboard_project.views import index, TaskListView, TaskCreateView, TaskDetai
 
 urlpatterns = [
     path("", index, name="index"),
+    path("login/", LoginView.as_view(), name="login"),
     path("tasks/<str:status>/", TaskListView.as_view(), name="filtered-task-list"),
     path("task/<int:pk>/", TaskDetailView.as_view(), name="task-detail"),
     path("task/<int:pk>/add-comment/", AddCommentView.as_view(), name="add-comment"),

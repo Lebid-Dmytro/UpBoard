@@ -18,6 +18,13 @@ class Position(models.Model):
         return self.name
 
 
+class Company(models.Model):
+    name = models.CharField(max_length=255)
+
+    def __str__(self):
+        return self.name
+
+
 class Worker(AbstractUser):
     position = models.ManyToManyField(Position, related_name="workers")
 
@@ -34,6 +41,7 @@ class Worker(AbstractUser):
         blank=True,
         help_text="Specific permissions for this user."
     )
+    company = models.ForeignKey(Company, on_delete=models.CASCADE, null=True, blank=True, related_name="workers")
 
     def __str__(self):
         return f"{self.first_name} {self.last_name} ({self.username})"
@@ -47,6 +55,7 @@ class Task(models.Model):
     ]
 
     name = models.CharField(max_length=255)
+    company = models.ForeignKey(Company, on_delete=models.CASCADE, null=True, blank=True, related_name="tasks")
     description = models.TextField()
     task_type = models.ForeignKey(
         "TypeTask", on_delete=models.SET_NULL, null=True, related_name="tasks"
@@ -91,4 +100,3 @@ class Comment(models.Model):
 
     def __str__(self):
         return f"Comment by {self.worker} on {self.task}"
-

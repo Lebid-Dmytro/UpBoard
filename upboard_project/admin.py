@@ -1,29 +1,32 @@
 from django.contrib import admin
-from upboard_project.models import TypeTask, Position, Task, Worker
+from django.contrib.auth.hashers import make_password
+
+from upboard_project.models import TypeTask, Position, Task, Worker, Company
 
 
 class WorkerAdmin(admin.ModelAdmin):
-    list_display = (
-        "username", "email", "first_name", "last_name", "get_positions"
-    )
-
+    list_display = ("username", "email", "first_name", "last_name", "get_positions", "company")
     search_fields = ("username", "email", "first_name", "last_name")
+    list_filter = ("position",)
 
     def get_positions(self, obj):
         return ", ".join([position.name for position in obj.position.all()])
 
     get_positions.short_description = "Positions"
 
-    fields = (
-        "username", "email", "password", "first_name", "last_name", "position"
-    )
+    fields = ("username", "email", "password", "first_name", "last_name", "company")
+    filter_horizontal = ("position",)
 
-    list_filter = ("position",)
+    def save_model(self, request, obj, form, change):
+        if form.cleaned_data.get("password"):  # Якщо користувач ввів пароль
+            obj.password = make_password(form.cleaned_data["password"])  # Хешуємо пароль
+        super().save_model(request, obj, form, change)
 
 
 admin.site.register(Worker, WorkerAdmin)
 admin.site.register(TypeTask)
 admin.site.register(Position)
+admin.site.register(Company)
 
 
 @admin.register(Task)
