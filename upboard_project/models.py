@@ -26,19 +26,6 @@ class Company(models.Model):
 
 class Worker(AbstractUser):
     position = models.ManyToManyField(Position, related_name="workers")
-
-    groups = models.ManyToManyField(
-        "auth.Group",
-        related_name="workers_groups",
-        blank=True,
-        help_text="The groups this user belongs to."
-    )
-    user_permissions = models.ManyToManyField(
-        "auth.Permission",
-        related_name="workers_permissions",
-        blank=True,
-        help_text="Specific permissions for this user."
-    )
     company = models.ForeignKey(
         Company,
         on_delete=models.CASCADE,
