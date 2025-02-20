@@ -9,6 +9,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy, reverse
 from django.utils.timezone import now
 from django.views import generic, View
+from django.views.generic import UpdateView
 
 from upboard_project.forms import TaskForm, ClientReviewForm
 from upboard_project.models import Task, ClientReview, Worker, Comment
@@ -100,3 +101,14 @@ class CustomLoginView(LoginView):
         if user.company:
             return redirect("task-list")
         return redirect("no-company")
+
+
+class TaskStatusUpdateView(LoginRequiredMixin, UpdateView):
+    model = Task
+    fields = ["status"]
+    template_name = "task_detail.html"
+    success_url = reverse_lazy("upboard_project:task-detail")
+
+    def form_valid(self, form):
+        form.save()
+        return redirect("upboard_project:task-detail", pk=self.object.pk)
