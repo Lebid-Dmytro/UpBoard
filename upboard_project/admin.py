@@ -5,7 +5,14 @@ from upboard_project.models import TypeTask, Position, Task, Worker, Company
 
 
 class WorkerAdmin(admin.ModelAdmin):
-    list_display = ("username", "email", "first_name", "last_name", "get_positions", "company")
+    list_display = (
+        "username",
+        "email",
+        "first_name",
+        "last_name",
+        "get_positions",
+        "company"
+    )
     search_fields = ("username", "email", "first_name", "last_name")
     list_filter = ("position",)
 
@@ -14,12 +21,14 @@ class WorkerAdmin(admin.ModelAdmin):
 
     get_positions.short_description = "Positions"
 
-    fields = ("username", "email", "password", "first_name", "last_name", "company")
+    fields = (
+        "username", "email", "password", "first_name", "last_name", "company"
+    )
     filter_horizontal = ("position",)
 
     def save_model(self, request, obj, form, change):
-        if form.cleaned_data.get("password"):  # Якщо користувач ввів пароль
-            obj.password = make_password(form.cleaned_data["password"])  # Хешуємо пароль
+        if form.cleaned_data.get("password"):
+            obj.password = make_password(form.cleaned_data["password"])
         super().save_model(request, obj, form, change)
 
 

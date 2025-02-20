@@ -3,7 +3,6 @@ from datetime import timedelta
 from django.contrib.auth import login
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView
-from django.core.checks import messages
 from django.db.models import Count
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy, reverse
@@ -29,9 +28,13 @@ class TaskListView(LoginRequiredMixin, generic.ListView):
         queryset = Task.objects.filter(company=self.request.user.company)
 
         if status == "done":
-            queryset = queryset.filter(status="done", closed_at__gte=now() - timedelta(days=30))
+            queryset = queryset.filter(
+                status="done", closed_at__gte=now() - timedelta(days=30)
+            )
         elif status == "archive_done":
-            queryset = queryset.filter(status="done", closed_at__lt=now() - timedelta(days=30))
+            queryset = queryset.filter(
+                status="done", closed_at__lt=now() - timedelta(days=30)
+            )
         elif status:
             queryset = queryset.filter(status=status)
 
@@ -51,7 +54,9 @@ class TaskDetailView(generic.DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["comments"] = self.object.comments.select_related("worker").all()
+        context["comments"] = (
+            self.object.comments.select_related("worker").all()
+        )
         return context
 
 
@@ -67,9 +72,14 @@ class AddCommentView(LoginRequiredMixin, View):
             parent_comment = get_object_or_404(Comment, pk=parent_id)
 
         if text:
-            Comment.objects.create(task=task, worker=worker, text=text, parent=parent_comment)
+            Comment.objects.create(
+                task=task, worker=worker, text=text, parent=parent_comment
+            )
 
-        return redirect(reverse("upboard_project:task-detail", kwargs={"pk": task.pk}))
+        return redirect(reverse(
+            "upboard_project:task-detail",
+            kwargs={"pk": task.pk})
+        )
 
 
 class TaskCreateView(LoginRequiredMixin, generic.CreateView):
