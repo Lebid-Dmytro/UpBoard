@@ -1,0 +1,28 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <title>{% block title %} {% endblock %}</title>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1, user-scalable=no" name="viewport"/>
+  {% load static %}
+  <link href="{% static 'css/styles.css' %}" rel="stylesheet">
+</head>
+<body class="is-preload homepage">
+<div class="header">
+  <a class="logo-style" href="/">UpBoard</a>
+
+  {% if user.is_authenticated %}
+  <div class="user-info">
+    <span>User: <strong>{{ user.get_username }}</strong></span>
+    <form action="{% url 'logout' %}" method="post">
+      {% csrf_token %}
+      <button type="submit">Logout</button>
+    </form>
+  </div>
+  {% endif %}
+</div>
+</body>
+
+{% block content %} {% endblock %}
+
+</html>

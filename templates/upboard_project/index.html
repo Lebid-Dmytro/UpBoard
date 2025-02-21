@@ -1,0 +1,153 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  {% block title %}
+  <title>UpBoard</title>
+  {% endblock %}
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1, user-scalable=no" name="viewport"/>
+  {% load static %}
+  <link href="{% static 'css/styles.css' %}" rel="stylesheet">
+</head>
+<body class="is-preload homepage">
+<div id="page-wrapper">
+
+  <!-- Header -->
+  <div id="header-wrapper">
+    <header class="container" id="header">
+
+      <!-- Logo -->
+      <div id="logo">
+        <h1><a href="/">UpBoard</a></h1>
+        <span>by Lebid-Dmytro</span>
+      </div>
+
+      <!-- Nav -->
+
+    </header>
+  </div>
+
+  <!-- Banner -->
+  <div id="banner-wrapper">
+    <div class="box container" id="banner">
+      <div class="row">
+        <div class="col-7 col-12-medium">
+          <h2>Hi! This is UpBoard.</h2>
+          <p>It's a free taskmanager for your team</p>
+        </div>
+        <div class="col-5 col-12-medium">
+          <ul>
+            <li><a class="button large icon solid fa-arrow-circle-right" href="create/">Add task</a></li>
+            <li><a class="button alt large icon solid fa-question-circle"
+                   href="{% url 'upboard_project:filtered-task-list' status='archive_done' %}">Archive</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Features -->
+  <div id="features-wrapper">
+    <div class="container">
+      <div class="row">
+        <div class="col-4 col-12-medium">
+
+          <!-- Box -->
+          <section class="box feature">
+            <a class="image featured" href="{% url 'upboard_project:filtered-task-list' 'to_do' %}">
+              <img alt="" src="{% static 'images/pic01.jpg' %}"/>
+            </a>
+            <div class="inner">
+              <header>
+                <h2>To Do</h2>
+                <p>Stay organized by managing tasks efficiently. Keep track of deadlines and progress to achieve your
+                  goals smoothly.</p>
+              </header>
+              <p>Proactively plan and prioritize your work to ensure nothing is left undone. Simplicity and clarity
+                drive productivity.</p>
+            </div>
+          </section>
+
+        </div>
+        <div class="col-4 col-12-medium">
+
+          <!-- Box -->
+          <section class="box feature">
+            <a class="image featured" href="{% url 'upboard_project:filtered-task-list' 'in_progress' %}">
+              <img alt="" src="{% static 'images/pic02.jpg' %}"/>
+            </a>
+            <div class="inner">
+              <header>
+                <h2>In Progress</h2>
+                <p>Stay focused, stay determined—progress is key.</p>
+              </header>
+              <p>Keep the momentum going! Focus on the tasks at hand and watch your progress unfold step by step. Every
+                action brings you closer to success.</p>
+            </div>
+
+          </section>
+
+        </div>
+        <div class="col-4 col-12-medium">
+
+          <!-- Box -->
+          <section class="box feature">
+            <a class="image featured" href="{% url 'upboard_project:filtered-task-list' 'done' %}">
+              <img alt="" src="{% static 'images/pic01.jpg' %}"/>
+            </a>
+            <div class="inner">
+              <header>
+                <h2>Oh, finally Done</h2>
+                <p>Success is yours—time to reflect and recharge.</p>
+              </header>
+              <p>Congratulations on a job well done! Celebrate your accomplishments and enjoy the satisfaction of
+                completing your goals. What's next on your list?</p>
+            </div>
+
+          </section>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main -->
+  <div id="main-wrapper">
+    <div class="container">
+      <div class="row gtr-200">
+        <div class="col-4 col-12-medium">
+
+          <!-- Sidebar -->
+          <div id="sidebar">
+            <section class="widget thumbnails">
+              <h3>Interesting stuff</h3>
+              <a class="button icon fa-file-alt" target="_blank" href="https://github.com/Lebid-Dmytro">More</a>
+            </section>
+          </div>
+
+        </div>
+        <div class="col-8 col-12-medium imp-medium">
+
+          <!-- Content -->
+          <div id="content">
+            <section class="last">
+              <h2>So what do you think?</h2>
+              <p>This is <strong>UpBoard</strong> and you can help us become better.
+              <p>We value your feedback and ideas! Share your thoughts, suggestions, or experiences to help us improve
+                and grow. Your voice makes a difference.</p>
+              <a class="button icon solid fa-arrow-circle-right" href="reviews/">Leave a review</a>
+            </section>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+
+
+</div>
+
+</body>
+</html>

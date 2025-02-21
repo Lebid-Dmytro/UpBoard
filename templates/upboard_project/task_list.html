@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+Task list
+{% endblock %}
+
+{% block content %}
+<div id="main">
+  <link href="{% static 'css/main.css' %}" rel="stylesheet">
+  <div class="status">
+    <h1>
+      <strong>
+        {% if status == "to_do" %}
+        To Do
+        {% elif status == "in_progress" %}
+        In Progress
+        {% elif status == "done" %}
+        Done
+        {% endif %}
+      </strong>
+    </h1>
+  </div>
+
+  {% for task in tasks %}
+  <article class="post">
+    <header>
+      <div class="title">
+        <h2>{{ task.name }}</h2>
+        <time class="published">{{ task.opened_at|date:"Y-m-d H:i" }}
+          {% if task.closed_at|date:"Y-m-d H:i" %}
+          / {{ task.closed_at|date:"Y-m-d H:i" }}
+          {% endif %}
+        </time>
+      </div>
+      <div class="meta">
+        {% for assignee in task.assignees.all %}
+        <div class="profile">
+          <img alt="{{ assignee.first_name }}"
+               class="profile-pic"
+               src="{% static 'images/default-avatar.jpg' %}">
+          <span class="profile-name">{{ assignee.first_name }} {{ assignee.last_name }}</span>
+        </div>
+        {% empty %}
+        <span class="no-assignee">No assignees</span>
+        {% endfor %}
+      </div>
+    </header>
+    <a class="image featured" href=""><img alt="" src="{% static 'images/pic01.jpg' %}"
+                                           style="width: 200px; height: 150px;"/></a>
+    <p>{{ task.description }}</p>
+    <footer>
+      <ul class="actions">
+        <li><a class="button large" href="{% url 'upboard_project:task-detail' pk=task.id %}">Details</a></li>
+      </ul>
+      <ul class="stats">
+        <li><a href="{% url 'upboard_project:task-detail' pk=task.id %}">Comments</a></li>
+        <li><a class="icon solid fa-comment" href="#">{{ task.num_comments }}</a></li>
+      </ul>
+    </footer>
+  </article>
+  {% endfor %}
+</div>
+{% endblock %}

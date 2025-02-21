@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<link href="{% static 'css/main.css' %}" rel="stylesheet">
+<h2 style="padding: 20px;">Leave your review and wish here 👇 🤌</h2>
+<div style="max-width: 800px; margin: 0 auto; padding: 20px;">
+  <form enctype="multipart/form-data" method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Leave</button>
+  </form>
+</div>
+
+{% endblock %}

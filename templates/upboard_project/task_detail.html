@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+Task detail
+{% endblock %}
+
+{% block content %}
+<link href="{% static 'css/main.css' %}" rel="stylesheet">
+<div class="task-detail">
+  <h1>Task Details</h1>
+  <div style="display: flex; justify-content: left; gap: 10px;">
+    <a class="image featured" href=""><img alt="" src="{% static 'images/pic01.jpg' %}"
+                                                      style="width: 200px; height: 150px;"/></a>
+  </div>
+  <p><strong>Name:</strong> {{ task.name }}</p>
+  <p><strong>Description:</strong> {{ task.description }}</p>
+  <p><strong>Type:</strong> {{ task.task_type }}</p>
+  <p><strong>Assignees:</strong>
+    {% for assignee in task.assignees.all %}
+    {{ assignee }},
+    {% empty %}
+    No assignees
+    {% endfor %}
+  </p>
+  <p><strong>Status:</strong> {{ task.get_status_display }}</p>
+<form method="post" action="{% url 'upboard_project:update-task-status' task.pk %}">
+    {% csrf_token %}
+    <label for="id_status"><strong>Change Status:</strong></label>
+    <select name="status" id="id_status">
+        <option value="to_do" {% if task.status == "to_do" %}selected{% endif %}>To Do</option>
+        <option value="in_progress" {% if task.status == "in_progress" %}selected{% endif %}>In Progress</option>
+        <option value="done" {% if task.status == "done" %}selected{% endif %}>Done</option>
+    </select>
+    <button type="submit">Update</button>
+</form>
+  <p><strong>Opened at:</strong> {{ task.opened_at }}</p>
+  <p><strong>Closed at:</strong> {{ task.closed_at|default:"Open yet" }}</p>
+</div>
+
+<div class="comments-section">
+  <h2>Comments</h2>
+  <ul>
+    {% for comment in comments %}
+    {% if not comment.parent %}
+    <li class="comment">
+      <strong>{{ comment.worker.first_name }} {{ comment.worker.last_name }}</strong>:
+      <p>{{ comment.text }}</p>
+      <small>({{ comment.created_at|date:"Y-m-d H:i" }})</small>
+
+      <!-- Форма відповіді -->
+      {% if user.is_authenticated %}
+      <form action="{% url 'upboard_project:add-comment' task.pk %}" method="post">
+        {% csrf_token %}
+        <input name="parent_id" type="hidden" value="{{ comment.id }}">
+        <textarea name="text" placeholder="Reply..." required rows="2"></textarea>
+        <button type="submit">Reply</button>
+      </form>
+      {% endif %}
+
+      <!-- Відображення відповідей -->
+      <ul class="replies">
+        {% for reply in comment.replies.all %}
+        <li class="reply">
+          <strong>{{ reply.worker.first_name }} {{ reply.worker.last_name }}</strong>:
+          <p>{{ reply.text }}</p>
+          <small>({{ reply.created_at|date:"Y-m-d H:i" }})</small>
+        </li>
+        {% endfor %}
+      </ul>
+    </li>
+    {% endif %}
+    {% empty %}
+    <li>No comments yet.</li>
+    {% endfor %}
+  </ul>
+</div>
+
+{% if user.is_authenticated %}
+<form action="{% url 'upboard_project:add-comment' task.pk %}" method="post">
+  {% csrf_token %}
+  <textarea name="text" placeholder="Add a comment..." required rows="3"></textarea>
+  <button type="submit">Submit</button>
+</form>
+{% else %}
+<p>You must be logged in to add a comment.</p>
+{% endif %}
+
+{% endblock %}
