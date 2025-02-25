@@ -1,5 +1,3 @@
-# UpBoard
-
 The main page where you can add tasks, view the archive, check all available tasks by their status ("To do", "In progress", "Done"). You can also leave a review. 
 
 <img width="522" alt="home_page" src="https://github.com/user-attachments/assets/6436f70f-f901-4a44-95d4-eb80f8fffff6" />
