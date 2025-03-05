@@ -6,6 +6,6 @@ from main import settings
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("", include("upboard_project.urls")),
+    path("", include("upboard_project.urls", namespace="upboard_project")),
     path("accounts/", include("django.contrib.auth.urls")),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
