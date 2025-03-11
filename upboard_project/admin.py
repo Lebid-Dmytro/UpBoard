@@ -11,7 +11,7 @@ class WorkerAdmin(admin.ModelAdmin):
         "first_name",
         "last_name",
         "get_positions",
-        "company"
+        "company",
     )
     search_fields = ("username", "email", "first_name", "last_name")
     list_filter = ("position",)
@@ -22,7 +22,7 @@ class WorkerAdmin(admin.ModelAdmin):
     get_positions.short_description = "Positions"
 
     fields = (
-        "username", "email", "password", "first_name", "last_name", "company"
+        "username", "email", "password", "first_name", "last_name", "company", "position"
     )
     filter_horizontal = ("position",)
 
