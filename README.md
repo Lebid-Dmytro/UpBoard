@@ -6,6 +6,18 @@ Django app for managing tasks in your project.
 
 UpBoard is a task management library deployed on [Render](https://upboard.onrender.com/).
 
+Superuser: 
+```shell
+login: user
+password: user12345
+```
+
+Dev-user: 
+```shell
+login: user_front
+password: user12345
+```
+
 ### **Installation**
 
 Ensure you have Python 3 installed before proceeding.
